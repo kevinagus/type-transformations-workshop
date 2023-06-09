@@ -10,10 +10,43 @@ const parser3 = {
   extract: () => true,
 };
 
-type GetParserResult<T> = unknown;
+// type GetParserResult<T> = T extends () => infer Res
+//   ? Res
+//   : T extends {
+//       parse: infer TRes extends (...args: any) => any;
+//     }
+//   ? ReturnType<TRes>
+//   : T extends {
+//       extract: infer TRes extends (...args: any) => any;
+//     }
+//   ? ReturnType<TRes>
+//   : never;
+
+// type GetParserResult<T> = T extends () => infer Res
+//   ? Res
+//   : T extends {
+//       parse: () => infer TRes;
+//     }
+//   ? TRes
+//   : T extends {
+//       extract: () => infer TRes;
+//     }
+//   ? TRes
+//   : never;
+
+type GetParserResult<T> = T extends
+  | (() => infer TRes)
+  | {
+      parse: () => infer TRes;
+    }
+  | {
+      extract: () => infer TRes;
+    }
+  ? TRes
+  : never;
 
 type tests = [
   Expect<Equal<GetParserResult<typeof parser1>, number>>,
   Expect<Equal<GetParserResult<typeof parser2>, string>>,
-  Expect<Equal<GetParserResult<typeof parser3>, boolean>>,
+  Expect<Equal<GetParserResult<typeof parser3>, boolean>>
 ];
