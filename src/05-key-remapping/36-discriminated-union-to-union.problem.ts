@@ -14,10 +14,16 @@ type Fruit =
       color: "orange";
     };
 
-type TransformedFruit = unknown;
+// type TransformedFruit = keyof {
+//   [F in Fruit as `${F["name"]}:${F["color"]}`]: F;
+// };
+
+type TransformedFruit = {
+  [F in Fruit as F["name"]]: `${F["name"]}:${F["color"]}`;
+}[Fruit["name"]];
 
 type tests = [
   Expect<
     Equal<TransformedFruit, "apple:red" | "banana:yellow" | "orange:orange">
-  >,
+  >
 ];
