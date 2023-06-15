@@ -1,6 +1,14 @@
 import { Equal, Expect } from "../helpers/type-utils";
 
-type DeepPartial<T> = unknown;
+// type DeepPartial<T> = {
+//   [K in keyof T]?: T[K] extends Array<infer A>
+//     ? Array<DeepPartial<A>>
+//     : DeepPartial<T[K]>;
+// };
+
+type DeepPartial<T> = T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : { [K in keyof T]?: DeepPartial<T[K]> };
 
 type MyType = {
   a: string;
